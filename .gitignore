@@ -1,0 +1,7 @@
+# config and other files
+.env
+package-lock.json
+
+# folders
+node_modules/
+dist/
