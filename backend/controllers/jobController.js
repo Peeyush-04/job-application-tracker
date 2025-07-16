@@ -80,3 +80,16 @@ export const deleteJob = async (req, res) => {
     res.status(500).json({ message: 'Failed to delete job.', error: err.message });
   }
 };
+
+// fetches job details via user id
+export const getJobById = async (req, res) => {
+  try {
+    const job = await Job.findOne({ _id: req.params.id, user: req.user._id });
+
+    if (!job) return res.status(404).json({ message: "Job not found." });
+
+    res.json(job);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching job.", error: err.message });
+  }
+};
