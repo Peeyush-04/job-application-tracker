@@ -31,19 +31,18 @@ export default function Register() {
   };
 
   return (
-    <div className="p-4 max-w-md mx-auto mt-20 border rounded shadow">
-      <h2 className="text-2xl font-bold mb-4 text-center">Register</h2>
+    <div className="register-container">
+      {error && <div className="register-error">{error}</div>}
 
-      {error && <div className="text-red-600 mb-2">{error}</div>}
-
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="register-form">
+        <h2 className="register-heading">Register</h2>
         <input
           type="text"
           name="name"
           placeholder="Full Name"
           value={form.name}
           onChange={handleChange}
-          className="w-full p-2 border rounded"
+          className="register-input"
         />
         <input
           type="email"
@@ -51,7 +50,7 @@ export default function Register() {
           placeholder="Email"
           value={form.email}
           onChange={handleChange}
-          className="w-full p-2 border rounded"
+          className="register-input"
         />
         <input
           type="password"
@@ -59,12 +58,9 @@ export default function Register() {
           placeholder="Password"
           value={form.password}
           onChange={handleChange}
-          className="w-full p-2 border rounded"
+          className="register-input"
         />
-        <button
-          type="submit"
-          className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700"
-        >
+        <button type="submit" className="register-button">
           Register
         </button>
       </form>

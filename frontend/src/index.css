@@ -1,68 +1,578 @@
+/* ==========================================================================
+   :root — Theme Variables
+   ========================================================================== */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --font-base: 'Inter', sans-serif;
+  --color-bg: #f9fafb;
+  --color-surface: #ffffff;
+  --color-primary: #2563eb;
+  --color-primary-dark: #1d4ed8;
+  --color-success: #16a34a;
+  --color-danger: #ef4444;
+  --color-gray: #6b7280;
+  --color-light: #f3f4f6;
+  --color-shadow: rgba(0, 0, 0, 0.05);
+  --radius-sm: 0.375rem;
+  --radius-md: 0.75rem;
+  --transition-fast: 0.15s ease-in-out;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
+/* ==========================================================================
+   Base Styles
+   ========================================================================== */
+*,
+*::before,
+*::after { box-sizing: border-box; }
 body {
   margin: 0;
+  font-family: var(--font-base);
+  background-color: var(--color-bg);
+  color: #1f2937;
+  line-height: 1.6;
+}
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+a:hover {
+  color: var(--color-primary-dark);
+}
+
+/* ==========================================================================
+   Dashboard Layout & Modal
+   ========================================================================== */
+.dashboard-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+.dashboard-header {
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
 }
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+.dashboard-heading {
+  font-size: 1.5rem;
+  font-weight: 700;
 }
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+.add-job-btn {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  font-size: 2rem;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px var(--color-shadow);
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  z-index: 100; /* sits above other content */
 }
-button:hover {
-  border-color: #646cff;
+.add-job-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px var(--color-shadow);
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+.job-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+/* Modal */
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+.modal-content {
+  background: var(--color-surface);
+  padding: 1.5rem;
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 10px var(--color-shadow);
+  width: 90%;
+  max-width: 400px;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+/* ==========================================================================
+   JobForm
+   ========================================================================== */
+.job-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.form-input,
+.form-select {
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  width: 100%;
+}
+.submit-button {
+  background-color: var(--color-success);
+  color: white;
+  padding: 0.75rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background var(--transition-fast);
+}
+.submit-button:hover {
+  background-color: #15803d;
+}
+
+/* ==========================================================================
+   JobCard
+   ========================================================================== */
+.job-card {
+  position: relative;                      /* for absolute link */
+  background-color: var(--color-surface);
+  padding: 1.5rem;
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 6px var(--color-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+.job-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px var(--color-shadow);
+}
+
+/* ================================
+   View Timeline Link
+   ================================ */
+.view-timeline-link {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 0.875rem;
+  color: var(--color-primary);
+  text-decoration: underline;
+  z-index: 2;
+  transition: color var(--transition-fast);
+}
+.view-timeline-link:hover {
+  color: var(--color-primary-dark);
+}
+
+/* ================================
+   Header
+   ================================ */
+.job-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.job-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.job-company {
+  color: var(--color-gray);
+  font-weight: 500;
+}
+.status-label {
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.status-applied   { background-color: #e5e7eb; }
+.status-review    { background-color: #fef3c7; }
+.status-success   { background-color: #bbf7d0; }
+.status-rejected  { background-color: #fecaca; }
+
+/* ================================
+   Resume Section
+   ================================ */
+.resume-section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+.resume-upload-link,
+.resume-view-link,
+.upload-confirm-button {
+  font-size: 0.875rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+.resume-upload-link,
+.resume-view-link {
+  text-decoration: underline;
+  color: var(--color-primary);
+}
+.resume-upload-link:hover,
+.resume-view-link:hover {
+  color: var(--color-primary-dark);
+}
+.upload-confirm-button {
+  background-color: var(--color-success);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+}
+
+/* ================================
+   Action Buttons
+   ================================ */
+.job-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.status-button,
+.delete-button {
+  font-size: 0.875rem;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+.status-button {
+  background-color: var(--color-light);
+}
+.status-button:hover {
+  background-color: #e5e7eb;
+}
+.delete-button {
+  background-color: var(--color-danger);
+  color: white;
+}
+.delete-button:hover {
+  background-color: #dc2626;
+}
+
+/* ==========================================================================
+   Job Actions
+   ========================================================================== */
+.job-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+.status-button,
+.delete-button {
+  font-size: 0.875rem;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+.status-button {
+  background-color: var(--color-light);
+}
+.status-button:hover {
+  background-color: #e5e7eb;
+}
+.delete-button {
+  background-color: var(--color-danger);
+  color: white;
+  margin-left: auto;
+}
+.delete-button:hover {
+  background-color: #dc2626;
+}
+
+/* ==========================================================================
+   Resume Section
+   ========================================================================== */
+.resume-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+.resume-upload-link,
+.resume-view-link,
+.upload-confirm-button {
+  font-size: 0.875rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+.resume-upload-link,
+.resume-view-link {
+  text-decoration: underline;
+  color: var(--color-primary);
+}
+.resume-upload-link:hover,
+.resume-view-link:hover {
+  color: var(--color-primary-dark);
+}
+.upload-confirm-button {
+  background-color: var(--color-success);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+}
+
+/* ==========================================================================
+   Job Details
+   ========================================================================== */
+.job-details-container {
+  max-width: 768px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 10px var(--color-shadow);
+}
+.job-details-company {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.job-details-role {
+  color: var(--color-gray);
+  font-size: 1.125rem;
+  margin-bottom: 1rem;
+}
+.job-details-resume-link {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+.job-details-resume-link:hover {
+  color: var(--color-primary-dark);
+}
+.job-details-timeline-heading {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+.job-details-no-history {
+  color: var(--color-gray);
+}
+
+/* ==========================================================================
+   Timeline
+   ========================================================================== */
+.timeline-container {
+  position: relative;
+  border-left: 4px solid var(--color-primary);
+  padding-left: 1rem;
+  margin-top: 1rem;
+}
+.timeline-entry {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+.timeline-dot {
+  position: absolute;
+  left: -14px;
+  top: 0.25rem;
+  width: 1rem;
+  height: 1rem;
+  background-color: var(--color-primary);
+  border: 2px solid var(--color-surface);
+  border-radius: 50%;
+}
+.timeline-date {
+  font-size: 0.875rem;
+  color: var(--color-gray);
+  margin-bottom: 0.25rem;
+}
+.timeline-status {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   Forms: Login & Register
+   ========================================================================== */
+.login-form,
+.register-form {
+  background-color: var(--color-surface);
+  padding: 2rem;
+  max-width: 24rem;
+  margin: 4rem auto;
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 8px var(--color-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.login-heading,
+.register-heading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.login-input,
+.register-input {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+}
+.login-button,
+.register-button {
+  background-color: var(--color-primary);
+  color: white;
+  padding: 0.75rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+.login-button:hover,
+.register-button:hover {
+  background-color: var(--color-primary-dark);
+}
+.register-error {
+  color: var(--color-danger);
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+/* ==========================================================================
+   Profile
+   ========================================================================== */
+.profile-container {
+  padding: 2rem;
+  max-width: 28rem;
+  margin: 2rem auto;
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 8px var(--color-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.profile-heading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.profile-text {
+  font-size: 1rem;
+}
+.profile-file {
+  margin-top: 1rem;
+}
+.profile-upload-btn {
+  background-color: var(--color-primary);
+  color: white;
+  padding: 0.75rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+.profile-upload-btn:hover {
+  background-color: var(--color-primary-dark);
+}
+
+/* ==========================================================================
+   Responsive Breakpoints
+   ========================================================================== */
+@media screen and (max-width: 768px) {
+  .dashboard-container,
+  .job-details-container,
+  .login-form,
+  .register-form,
+  .profile-container {
+    padding: 1rem;
+    margin: 1rem;
   }
-  a:hover {
-    color: #747bff;
+
+  .job-card {
+    padding: 0.75rem;
   }
-  button {
-    background-color: #f9f9f9;
+
+  .job-title {
+    font-size: 1rem;
+  }
+
+  .job-details-company {
+    font-size: 1.5rem;
+  }
+
+  .resume-section {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .job-list-grid {
+    grid-template-columns: 1fr;
   }
 }
+
+/* ---------- Navbar ---------- */
+.navbar {
+  background-color: #ffffff;       /* white background */
+  border-bottom: 1px solid #e5e7eb;/* subtle bottom border */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+}
+
+.nav-logo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-decoration: none;
+  margin-right: 2rem;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.nav-link {
+  color: #374151;                  /* dark gray text */
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.15s ease-in-out;
+}
+
+.nav-link:hover {
+  color: var(--color-primary);
+}
+
+.logout-button {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s ease-in-out;
+}
+
+.logout-button:hover {
+  background: var(--color-primary-dark);
+}
+
