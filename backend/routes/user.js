@@ -18,5 +18,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.post('/upload-resume', protect, upload.single('resume'), uploadResume);
+router.get('/me', protect, (req, res) => {
+  res.json(req.user);
+});
 
 export default router;
