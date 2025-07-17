@@ -1,4 +1,5 @@
 version: "3.8"
+
 services:
   mongo:
     image: mongo:6
@@ -10,9 +11,7 @@ services:
       - "27017:27017"
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: opt1mal04/job-tracker-backend:latest
     container_name: job-tracker-backend
     restart: unless-stopped
     env_file:
@@ -23,9 +22,7 @@ services:
       - "5000:5000"
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: opt1mal04/job-tracker-frontend:latest
     container_name: job-tracker-frontend
     restart: unless-stopped
     depends_on:
