@@ -17,7 +17,7 @@ In this project some features related to job-application-tracking are present:
 
 ## How to use it:
 There are particularly 2 different ways to use/monitor my project:
-1. Via [Github](https://github.com/Peeyush-04/job-application-tracker) ~ *Use this only when you have comeplete docker setup in your local system and you want to build this project via yourself.* (directly run `.\start.ps1` for Windows)
+1. Via [Github](https://github.com/Peeyush-04/job-application-tracker) ~ *Use this only when you have complete docker setup in your local system and you want to build this project via yourself.* (directly run `.\start.ps1` for Windows)
 2. Via [Docker](https://hub.docker.com/r/opt1mal04/job-application-tracker) ~ *Use this if you want to work with images.* (run `docker-compose up -d`)
 
 ---
